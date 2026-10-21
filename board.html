@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>다크보드 Pro</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="style.css">
+  <script src="fabric.min.js"></script>
+</head>
+<body class="dark-mode">
+
+  <div id="ui-container" class="ui-element">
+    
+    <!-- 메인 툴바 -->
+    <div id="main-toolbar" class="toolbar-box">
+      <div id="main-drag-handle" title="Drag">⠿</div>
+      
+      <div class="tools-wrapper">
+        <button class="icon-btn" id="btn-dock" data-i18n-title="btnDock">📌</button>
+        <div class="divider"></div>
+        
+        <button class="icon-btn" id="btn-lock-tool" data-i18n-title="btnLock">🔓</button>
+        <div class="divider"></div>
+        
+        <button class="icon-btn active" data-tool="select" data-i18n-title="toolSelect">↖️</button>
+        <button class="icon-btn" data-tool="pan" data-i18n-title="toolPan">✋</button>
+        <div class="divider"></div>
+        
+        <button class="icon-btn" data-tool="pen" data-i18n-title="toolPen">✏️</button>
+        <button class="icon-btn" data-tool="highlighter" data-i18n-title="toolHighlighter">🖍️</button>
+        <button class="icon-btn" data-tool="laser" data-i18n-title="toolLaser">🔴</button>
+        <button class="icon-btn" data-tool="eraser" data-i18n-title="toolEraser">🧽</button>
+        <div class="divider"></div>
+        
+        <!-- 대표 도형 버튼 -->
+        <button class="icon-btn" id="btn-shape-main" data-tool="shape" data-i18n-title="toolShape">▭</button>
+
+        <button class="icon-btn" data-tool="text" data-i18n-title="toolText">𝗧</button>
+        <button class="icon-btn" data-tool="sticky" data-i18n-title="toolSticky">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="display:block;">
+            <path d="M4 3H20V14L14 20H4C3.45 20 3 19.55 3 19V4C3 3.45 3.45 3 4 3Z" fill="#FDF065"/>
+            <path d="M14 14H20L14 20V14Z" fill="#D2C330"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="btn-image" data-i18n-title="toolImage">🖼️</button>
+        <input type="file" id="image-upload" accept="image/*" style="display:none;">
+        <div class="divider"></div>
+        
+        <button class="icon-btn" id="btn-theme" data-i18n-title="toolTheme">🌙</button>
+        <button class="icon-btn" id="btn-timer" data-i18n-title="toolTimer">⏱️</button>
+        <button class="icon-btn" id="btn-fullscreen" data-i18n-title="toolFullscreen">⛶</button>
+        <button class="icon-btn" id="btn-screenshot" data-i18n-title="toolScreenshot">💾</button>
+        <button class="icon-btn" id="toggle-ui-btn" data-i18n-title="toolHideUI">👁️</button>
+        <div class="divider"></div>
+        
+        <button class="icon-btn" id="btn-undo" data-i18n-title="toolUndo">↩️</button>
+        <button class="icon-btn" id="btn-redo" data-i18n-title="toolRedo">↪️</button>
+        <button class="icon-btn" id="btn-clear" data-i18n-title="toolClear" style="color: #ff4d4d;">🗑️</button>
+      </div>
+    </div>
+
+    <!-- 동적 서브 툴바 -->
+    <div id="sub-toolbar" class="toolbar-box" style="display: none;">
+      
+      <!-- 도형 종류 선택 그룹 -->
+      <div class="prop-group" id="grp-shape-type" style="display:none;">
+        <span class="prop-label" data-i18n="lblShape">도형</span>
+        <button class="small-btn shape-choice-btn active" data-shape="shape-rect" title="네모">▭</button>
+        <button class="small-btn shape-choice-btn" data-shape="shape-circle" title="동그라미">◯</button>
+        <button class="small-btn shape-choice-btn" data-shape="shape-diamond" title="마름모">◇</button>
+        <button class="small-btn shape-choice-btn" data-shape="shape-arrow" title="화살표">↗</button>
+        <button class="small-btn shape-choice-btn" data-shape="shape-line" title="직선">➖</button>
+      </div>
+
+      <div class="prop-group" id="grp-select" style="display:none;">
+        <span class="prop-label" data-i18n="lblLayer">레이어</span>
+        <button class="small-btn layer-btn" data-layer="back" data-i18n-title="layerBack">⇊</button>
+        <button class="small-btn layer-btn" data-layer="backward" data-i18n-title="layerBackward">↓</button>
+        <button class="small-btn layer-btn" data-layer="forward" data-i18n-title="layerForward">↑</button>
+        <button class="small-btn layer-btn" data-layer="front" data-i18n-title="layerFront">⇈</button>
+        <div class="sub-divider"></div>
+        <span class="prop-label" data-i18n="lblAlign">정렬</span>
+        <button class="small-btn align-btn" data-align="left" data-i18n-title="btnAlignL">⇦</button>
+        <button class="small-btn align-btn" data-align="center" data-i18n-title="btnAlignC">↔</button>
+        <button class="small-btn align-btn" data-align="right" data-i18n-title="btnAlignR">⇨</button>
+        <div class="sub-divider"></div>
+        <button class="small-btn" id="btn-obj-lock" data-i18n-title="btnObjLock">🔓</button>
+      </div>
+
+      <div class="prop-group" id="grp-pen-mode" style="display:none;">
+        <span class="prop-label" data-i18n="lblMode">모드</span>
+        <button class="prop-btn mode-btn active" data-mode="free" data-i18n="modeFree">자유형 〰️</button>
+        <button class="prop-btn mode-btn" data-mode="straight" data-i18n="modeStraight">직선 ➖</button>
+      </div>
+
+      <div class="prop-group" id="grp-stroke-color" style="display:none;">
+        <span class="prop-label" id="lbl-stroke">색상</span>
+        <div class="color-btn db-transparent-btn" id="stroke-transparent" data-color="transparent" data-target="stroke" data-i18n-title="colorTrans"></div>
+        <div class="color-btn active" style="background:#ffffff" data-color="#ffffff" data-target="stroke" data-i18n-title="colorWhite"></div>
+        <div class="color-btn" style="background:#ff4d4d" data-color="#ff4d4d" data-target="stroke" data-i18n-title="colorRed"></div>
+        <div class="color-btn" style="background:#4facfe" data-color="#4facfe" data-target="stroke" data-i18n-title="colorBlue"></div>
+        <div class="color-btn" style="background:#2ed573" data-color="#2ed573" data-target="stroke" data-i18n-title="colorGreen"></div>
+        <div class="color-btn" style="background:#feca57" data-color="#feca57" data-target="stroke" data-i18n-title="colorYellow"></div>
+        <label for="custom-stroke" class="palette-label" data-i18n-title="customColor">🎨</label>
+        <input type="color" id="custom-stroke" style="opacity: 0; width: 0; height: 0; position: absolute;">
+      </div>
+
+      <div class="prop-group" id="grp-fill" style="display:none;">
+        <span class="prop-label" id="lbl-fill">배경</span>
+        <div class="color-btn db-transparent-btn active" id="fill-transparent" data-color="transparent" data-target="fill" data-i18n-title="colorTrans"></div>
+        <div class="color-btn" style="background:#ffffff" data-color="#ffffff" data-target="fill" data-i18n-title="colorWhite"></div>
+        <div class="color-btn" style="background:#ffb8b8" data-color="#ffb8b8" data-target="fill" data-i18n-title="fillPink"></div>
+        <div class="color-btn" style="background:#c7ecee" data-color="#c7ecee" data-target="fill" data-i18n-title="fillBlue"></div>
+        <div class="color-btn" style="background:#b8e994" data-color="#b8e994" data-target="fill" data-i18n-title="fillGreen"></div>
+        <div class="color-btn" style="background:#fdf065" data-color="#fdf065" data-target="fill" data-i18n-title="fillYellow"></div>
+        <label for="custom-fill" class="palette-label" data-i18n-title="customColor">🎨</label>
+        <input type="color" id="custom-fill" style="opacity: 0; width: 0; height: 0; position: absolute;">
+      </div>
+
+      <div class="tool-row">
+        <div class="prop-group" id="grp-opacity" style="display:none;">
+          <span class="prop-label" data-i18n="lblOpacity">투명도</span>
+          <input type="range" id="fill-opacity-slider" min="0.1" max="1" step="0.05" value="0.7" data-i18n-title="opacityAdjust" style="width:70px;">
+          <span id="opacity-display" class="slider-val">70%</span>
+        </div>
+
+        <div class="prop-group" id="grp-size" style="display:none;">
+          <span class="prop-label" id="lbl-size" data-i18n="lblStrokeWidth">선의 굵기</span>
+          <button class="small-btn" id="btn-minus">➖</button>
+          <input type="number" id="stroke-width-input" class="display-value" value="5" min="1" max="300" data-i18n-title="lblSize">
+          <button class="small-btn" id="btn-plus">➕</button>
+        </div>
+
+        <div class="prop-group" id="grp-style" style="display:none;">
+          <span class="prop-label" data-i18n="lblStyle">스타일</span>
+          <button class="prop-btn stroke-style-btn active" data-style="solid">━</button>
+          <button class="prop-btn stroke-style-btn" data-style="dashed">╍</button>
+          <button class="prop-btn stroke-style-btn" data-style="dotted">⁚</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- 타이머 위젯 -->
+  <div id="db-timer-widget" class="ui-element">
+    <div id="db-timer-handle" data-i18n="timerDrag">타이머 (드래그 이동)</div>
+    <div class="db-timer-inputs">
+      <input type="number" id="db-t-min" class="db-timer-input" min="0" max="99" value="05"> :
+      <input type="number" id="db-t-sec" class="db-timer-input" min="0" max="59" value="00">
+    </div>
+    <div class="db-timer-ctrls">
+      <button class="db-timer-btn" id="db-t-reset" data-i18n="timerReset">리셋</button>
+      <button class="db-timer-btn primary" id="db-t-play" data-i18n="timerStart">시작</button>
+      <button class="db-timer-btn" id="db-t-close" data-i18n-title="timerClose">닫기</button>
+    </div>
+    <div id="db-timer-resizer" title="Size">◢</div>
+  </div>
+
+  <button class="icon-btn" id="btn-restore-ui" data-i18n-title="restoreUI" style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999; background: rgba(35, 35, 41, 0.95); box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 50px; height: 50px; font-size: 24px; pointer-events: auto;">👁️</button>
+
+  <canvas id="board"></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
